@@ -8,7 +8,7 @@ UntitledTextPack is simple pack with "untitled" tools.
 
 # Description
   All tools is written in C language from scratch.
-  Dependencies is: ninja build, gcc and clang compilers. 
+  Dependencies is: ninja build, gcc compiler. 
   
 # Using
-  UnitledTextBuildSystem - see "examples" folder.
+  UnitledTextBuildSystem - see man pages "man ./docs/utbs.1".

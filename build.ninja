@@ -7,13 +7,13 @@ cflags = -Wno-implicit-function-declaration -Wno-return-type $
 
 # rules
 rule cc
-    command = clang $cflags -c $in -o $out 
+    command = gcc $cflags -c $in -o $out 
 
 rule altcc
     command = gcc $cflags -c $in -o $out
 
 rule link
-    command = clang $in -o $out
+    command = gcc $in -o $out
 
 rule altlink
     command = gcc $in -o $out

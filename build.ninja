@@ -3,7 +3,7 @@ root = .
 builddir = build
 cflags = -Wno-implicit-function-declaration -Wno-return-type $
     -Wno-incompatible-pointer-types -Wno-format -Wno-compare-distinct-pointer-types $
-    -Wno-string-compare -pthread
+    -Wno-string-compare
 
 # rules
 rule cc

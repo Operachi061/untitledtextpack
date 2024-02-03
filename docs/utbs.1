@@ -6,12 +6,20 @@ utbs \- Simple build system for automatic build.
 utbs -p [path] -f [function]
 .SH OPTIONS
 -f --function - Function in Utbsource file to start.
+
 -p --path - Path to Utbsource file.
-.SH EXMAPLES
+
+-y --yes - Confirming question.
+
+-p --parallel - Parallel process (faster).
+.SH EXAMPLES
 You can create file named "Utbsource" and check this example:
+        this is comment
         name <
-            echo test
+            # this is comment number 2
+            echo test:
+            echo test2:
         >
-You can create 2 or 10 functions, Utbsource file has no limits of functions.
+        example < echo working: echo working2: >
 .SH AUTHOR
 Operachi

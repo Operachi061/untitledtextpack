@@ -3,7 +3,7 @@ root = .
 builddir = build
 cflags = -Wno-implicit-function-declaration -Wno-return-type $
     -Wno-incompatible-pointer-types -Wno-format -Wno-compare-distinct-pointer-types $
-    -Wno-string-compare
+    -Wno-string-compare -pthread
 
 # rules
 rule cc
@@ -22,11 +22,13 @@ rule clean
     command = rm -f $builddir/*.o $root/root/usr/bin/*
 
 # building
-build $builddir/utbs.o: cc $root/src/untitledtextbuildsystem/main.c
+build $builddir/main.o: cc $root/src/untitledtextbuildsystem/main.c
+build $builddir/loadbar.o: cc $root/src/untitledtextbuildsystem/loadbar.c
+build $builddir/parallel.o: cc $root/src/untitledtextbuildsystem/parallel.c
 build $builddir/utsh.o: cc $root/src/untitledtextshell/main.c
 build $builddir/utw.o: altcc $root/src/untitledtextwriter/main.c
 
 # linking
-build $root/root/bin/utbs: link $builddir/utbs.o
+build $root/root/bin/utbs: link $builddir/main.o $builddir/loadbar.o $builddir/parallel.o 
 build $root/root/bin/utsh: link $builddir/utsh.o
 build $root/root/bin/utw: altlink $builddir/utw.o

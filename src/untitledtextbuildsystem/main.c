@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <argp.h>
 #include <string.h>
+#include "loadbar.h"
+#include "parallel.h"
 
 #define RED     "\033[0;31m"
 #define GREEN   "\033[0;32m"
@@ -12,18 +14,26 @@
 #define MAX_SIZE 999
 
 int i = 0;
+int cmd;
+int parser = 0;
+int nwlnc = 0; 
 int nmbcheck = 0;
+char *cparallel;
 char *func;
 char *modpath;
+char *yes;
 char chk[MAX_SIZE];
 char strchk[MAX_SIZE];
 char rfile[MAX_SIZE];
 char file[MAX_SIZE];
 char path[MAX_SIZE];
+
 static char doc[] = "UntitledTextBuildSystem - utbs. Part of UntitledTextPack";
 static struct argp_option options[] = {
   { "path", 'p', "<path>", 0, "Path to Utbsource file." },
   { "function", 'f', "<function>", 0, "Function in Utbsource file to start." },
+  { "yes", 'y', 0, 0, "Confirming question." },
+  { "paraller", 'P', 0, 0, "Parallel process (faster)." },
   { 0 }
 };
 static error_t
@@ -37,6 +47,12 @@ parse_opt (int key, char *arg, struct argp_state *state) {
             strcpy(path, modpath);
             strcat(path, "/Utbsource");
             break;
+        case 'y':
+            yes = "y";
+            break;
+        case 'P':
+            cparallel = "P";
+            break; 
         default:
             return ARGP_ERR_UNKNOWN;
     }
@@ -47,7 +63,7 @@ int main(int argc, char **argv) {
     argp_parse (&argp, argc, argv, 0, 0, 0);
     printf("You started utbs.\n");
     utbsinf(); printf("Preparing process\n");
-    printf("%sUtbsource file check -> %s", CYAN, END);
+    printf("%s Utbsource file check -> %s", CYAN, END);
     FILE *fp = fopen(path, "r");
     FILE *fpt = fopen(path, "r");
     if (fp == NULL) {
@@ -57,11 +73,13 @@ int main(int argc, char **argv) {
     } else {
         printf("%sfound%s\n", GREEN, END);
     }
-    printf(" Finding functions in parser\n");
+    printf("  Finding functions in parser\n");
     if (func == NULL) {
-        printf("  FUNCTIONS NOT FOUND\n");
+        printf("    FUNCTION NOT FOUND\n");
         printf("Exiting.\n");
         return 0;
+    } else {
+        printf("    FUNCTION FOUND\n");
     }
     strcat(chk, func);
     strcat(chk, " <");
@@ -73,11 +91,11 @@ int main(int argc, char **argv) {
             i++;
         }
         if (position == NULL) {
-            printf("%s[ LINE: %d ]%s %s\n", RED, i, END, "NOT FOUND");
+            printf("  %s/Utbsource >> %s[ LINE: %d]%s %s\n", modpath, RED, i, END, "NOT FOUND");
             nmbcheck = 1;
         } else {
             position[strlen(chk)] = '\0';
-            printf("%s[ LINE: %d ]%s \'%s\' %s->%s %sfound%s\n", RED, i, END, position, CYAN, END, GREEN, END);
+            printf("  %s/Utbsource >> %s[ LINE: %d]%s \'%s\' %s->%s %sfound%s\n", modpath, RED, i, END, position, CYAN, END, GREEN, END);
             nmbcheck = 2;
             break;
         }
@@ -96,7 +114,7 @@ int main(int argc, char **argv) {
         strcat(file, rfile);  
     }
     for (int x = 0; x < strlen(strchk) + strlen(chk) + 1; x++) {
-        file[x] = '\t';
+        file[x] = ' ';
     }
     for (int y = 0; y < strlen(file); y++) {
         if (file[y] == '>') {
@@ -104,8 +122,66 @@ int main(int argc, char **argv) {
         }
     }
     file[strlen(file) - 1] = '\0';
+    printf("%sProcess to be maked%s %s->%s       \n", BLUE, END, CYAN, END);
+    printf("%s\n", file);
+    if (yes != "y") {
+        printf("%sHint: You can skip question via adding \'-y\' option.%s\n", YELLOW, END);
+        printf("%sMake this process ?%s %s|%s %sN%s%s/%s%sy%s ", BLUE, END, CYAN, END, GREEN, END, YELLOW, END, RED, END);
+        scanf("%c", &parser);
+        switch (parser) {
+            case 'N':
+                printf("Exiting.\n");
+                return 0;
+                break;
+
+            case 'n':
+                printf("Exiting.\n");
+                return 0;
+                break;
+
+            case 'y':
+                NULL;
+                break;
+
+            case 'Y':
+                NULL;
+                break;
+
+            default:
+                printf("Exiting.\n");
+                return 0;
+                break;   
+        }
+    } else {
+        printf("%sUSED%s %s-y%s %sOPTION%s\n", GREEN, END, YELLOW, END, GREEN, END);
+    }
     utbsinf(); printf("Starting %s process\n", func);
-    system(file);
+    for (int cfile = 0; cfile < strlen(file); cfile++) {
+        if (file[cfile] == ':') {
+            nwlnc++;
+        }
+    }
+    int countf = nwlnc + 1;
+    for (int tcfile = 0; tcfile < strlen(file); tcfile++) {
+        if (file[tcfile] == ':') {
+            char tcfilef[MAX_SIZE];
+            strcpy(tcfilef, file);
+            tcfilef[tcfile] = '\0';
+            if (cparallel == "P") {
+                parallel(tcfilef);
+            } else {
+                system(tcfilef);
+                if (countf > 0) {
+                    countf--;
+                    loadbar(countf);
+                }
+            }
+            for (int tcfileb = 0; tcfileb < tcfile; tcfileb++) {
+                file[tcfileb] = ' ';
+            }
+        }
+    }
+    utbsinf(); printf("Finished %s process\n", func);
     printf("Exiting.\n");
-    return 0;
+    return 0; 
 }

@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <argp.h>
 #include <string.h>
+#include <sys/wait.h>
+#include <unistd.h>
 #include "loadbar.h"
-#include "parallel.h"
 
 #define RED     "\033[0;31m"
 #define GREEN   "\033[0;32m"
@@ -15,13 +16,14 @@
 
 int i = 0;
 int cmd;
-int parser = 0;
 int nwlnc = 0; 
 int nmbcheck = 0;
-char *cparallel;
+int cparallel;
+int yes;
+int status;
 char *func;
+char *parser;
 char *modpath;
-char *yes;
 char chk[MAX_SIZE];
 char strchk[MAX_SIZE];
 char rfile[MAX_SIZE];
@@ -48,17 +50,20 @@ parse_opt (int key, char *arg, struct argp_state *state) {
             strcat(path, "/Utbsource");
             break;
         case 'y':
-            yes = "y";
+            yes = 'p';
             break;
         case 'P':
-            cparallel = "P";
+            cparallel = 'P';
             break; 
         default:
             return ARGP_ERR_UNKNOWN;
     }
+    return 0;
 }
 static struct argp argp = { options, parse_opt, NULL, doc };
-void utbsinf() { printf("%sUtbs -> %s", BLUE, END); }
+void utbsinf(void) { printf("%sUtbs -> %s", BLUE, END); }
+int system(const char *command);
+void loadbar(const int count);
 int main(int argc, char **argv) {
     argp_parse (&argp, argc, argv, 0, 0, 0);
     printf("You started utbs.\n");
@@ -124,33 +129,23 @@ int main(int argc, char **argv) {
     file[strlen(file) - 1] = '\0';
     printf("%sProcess to be maked%s %s->%s       \n", BLUE, END, CYAN, END);
     printf("%s\n", file);
-    if (yes != "y") {
+    if (yes == 'y') {
         printf("%sHint: You can skip question via adding \'-y\' option.%s\n", YELLOW, END);
         printf("%sMake this process ?%s %s|%s %sN%s%s/%s%sy%s ", BLUE, END, CYAN, END, GREEN, END, YELLOW, END, RED, END);
-        scanf("%c", &parser);
-        switch (parser) {
-            case 'N':
-                printf("Exiting.\n");
-                return 0;
-                break;
-
-            case 'n':
-                printf("Exiting.\n");
-                return 0;
-                break;
-
-            case 'y':
-                NULL;
-                break;
-
-            case 'Y':
-                NULL;
-                break;
-
-            default:
-                printf("Exiting.\n");
-                return 0;
-                break;   
+        scanf("%c", parser);
+        if (!strcmp(parser, "N")) {
+            printf("Exiting.\n");
+            return 0;
+        } else if (!strcmp(parser, "n")) {
+            printf("Exiting.\n");
+            return 0;
+        } else if (!strcmp(parser, "Y")) {
+            NULL;
+        } else if (!strcmp(parser, "y")) {
+            NULL;
+        } else {
+            printf("Exiting.\n");
+            return 0;
         }
     } else {
         printf("%sUSED%s %s-y%s %sOPTION%s\n", GREEN, END, YELLOW, END, GREEN, END);
@@ -162,13 +157,21 @@ int main(int argc, char **argv) {
         }
     }
     int countf = nwlnc + 1;
+    int pid;
     for (int tcfile = 0; tcfile < strlen(file); tcfile++) {
         if (file[tcfile] == ':') {
             char tcfilef[MAX_SIZE];
             strcpy(tcfilef, file);
             tcfilef[tcfile] = '\0';
-            if (cparallel == "P") {
-                parallel(tcfilef);
+            if (cparallel == 'P') {
+                pid = fork();
+                if (pid == 0) {
+                    system(tcfilef);
+                    while (waitpid(pid, &status, WNOHANG) == 0) {
+                        // wait(&status);
+                        kill(pid, SIGTERM);
+                    }
+                }
             } else {
                 system(tcfilef);
                 if (countf > 0) {

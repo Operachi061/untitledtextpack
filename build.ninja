@@ -1,16 +1,14 @@
 # variables
 root = .
 builddir = build
-cflags = -Wno-implicit-function-declaration -Wno-return-type $
-    -Wno-incompatible-pointer-types -Wno-format -Wno-compare-distinct-pointer-types $
-    -Wno-string-compare
+cflags = -Wall -Werror -Wpedantic
 
 # rules
 rule cc
     command = clang $cflags -c $in -o $out 
 
 rule altcc
-    command = gcc $cflags -c $in -o $out
+    command = gcc -c $in -o $out
 
 rule link
     command = clang $in -o $out
@@ -24,11 +22,10 @@ rule clean
 # building
 build $builddir/main.o: cc $root/src/untitledtextbuildsystem/main.c
 build $builddir/loadbar.o: cc $root/src/untitledtextbuildsystem/loadbar.c
-build $builddir/parallel.o: cc $root/src/untitledtextbuildsystem/parallel.c
 build $builddir/utsh.o: cc $root/src/untitledtextshell/main.c
 build $builddir/utw.o: altcc $root/src/untitledtextwriter/main.c
 
 # linking
-build $root/root/bin/utbs: link $builddir/main.o $builddir/loadbar.o $builddir/parallel.o 
+build $root/root/bin/utbs: link $builddir/main.o $builddir/loadbar.o
 build $root/root/bin/utsh: link $builddir/utsh.o
 build $root/root/bin/utw: altlink $builddir/utw.o

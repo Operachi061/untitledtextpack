@@ -2,7 +2,7 @@
 UntitledTextPack is simple pack with "untitled" tools.
 
 # IMPORTANT !!
-  UntitledTextBuildSystem have implemented variables adding and is not full finished so i pushed this because i started working on this 3 feb and pushed in this day (8 feb).
+  UntitledTextBuildSystem have implemented variables and is not full finished so i pushed this because i started working on this 3 feb and pushed in this day (8 feb).
 
 # Tools
   - UntitledTextBuildSystem - Simple build system for automatic build.

@@ -12,14 +12,18 @@ utbs -p [path] -f [function]
 -y --yes - Confirming question.
 
 -p --parallel - Parallel process (faster).
+
+-d --debug - Debuging utbs.
 .SH EXAMPLES
 You can create file named "Utbsource" and check this example:
         this is comment
+        EXAMPLE="test"
+        EXAMPLE2="working2"
         name <
             # this is comment number 2
-            echo test:
             echo test2:
+            echo @{EXAMPLE}:
         >
-        example < echo working: echo working2: >
+        example < echo working: echo @{EXAMPLE2}: >
 .SH AUTHOR
 Operachi

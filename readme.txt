@@ -2,16 +2,14 @@
 UntitledTextPack is simple pack with "untitled" tools.
 
 # IMPORTANT !!
-  UntitledTextBuildSystem have implemented variables adding and is not full finished so i pushed this because i started working on this 3 feb and pushed in this day (8 feb).
+  UntitledTextBuildSystem is moved to new repo.
+  LINK: https://github.com/Operachi061/untitledtextbuildsystem
 
 # Tools
-  - UntitledTextBuildSystem - Simple build system for automatic build.
   - UntitledTextWriter - Simple text editor (almost finished).
   - UntitledTextShell - Simple shell (not finished).
 
 # Description
   All tools is written in C language from scratch.
-  Dependencies is: ninja build, gcc and clang compiler. 
-  
-# Using
-  UnitledTextBuildSystem - see man pages "man ./docs/utbs.1".
+  Dependencies is: ninja build and gcc compiler. 
+ 

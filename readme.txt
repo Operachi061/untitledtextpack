@@ -12,5 +12,5 @@ UntitledTextPack is simple pack with "untitled" tools.
   Dependencies is: ninja build, gcc and clang compiler. 
 
   Links to utlibc and utbs:
-	utbs: https://github.com/Operachi061/untitledtextbuildsystem
-	utlibc: https://github.com/Operachi061/untitledtextlibc
+  utbs: https://github.com/Operachi061/untitledtextbuildsystem
+  utlibc: https://github.com/Operachi061/untitledtextlibc
